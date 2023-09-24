@@ -1,6 +1,10 @@
 package com.test.plugins
 
 import TimelineItem
+import com.test.Post
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.request.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -38,18 +42,6 @@ fun Application.configureRouting() {
                 )
             )
             call.respond(timeline)
-        }
-        webSocket("/updates") {
-            try {
-                var counter = 0
-                while (true) {
-                    val uniqueData = "Data: ${counter++}"
-                    send(uniqueData)
-                    delay(1) // Delay for 1 millisecond
-                }
-            } catch (e: Exception) {
-                println("Error sending data: ${e.message}")
-            }
         }
     }
 }
