@@ -4,6 +4,9 @@ import TimelineItem
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.delay
 
 fun Application.configureRouting() {
     routing {
@@ -26,7 +29,7 @@ fun Application.configureRouting() {
                     title = "Annual Meetup",
                     date = "2023-03-01",
                     description = "Join us for our annual meetup at Central Park."
-                ) ,
+                ),
                 TimelineItem(
                     type = "birthday",
                     title = "Shruti Khare",
@@ -35,6 +38,18 @@ fun Application.configureRouting() {
                 )
             )
             call.respond(timeline)
+        }
+        webSocket("/updates") {
+            try {
+                var counter = 0
+                while (true) {
+                    val uniqueData = "Data: ${counter++}"
+                    send(uniqueData)
+                    delay(1) // Delay for 1 millisecond
+                }
+            } catch (e: Exception) {
+                println("Error sending data: ${e.message}")
+            }
         }
     }
 }
